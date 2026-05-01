@@ -3,299 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trade List Management ⚖️</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <title>Trader List - Auto Rest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #050505;
-            --card-bg: #111111;
-            --accent: #e5c07b;
-            --success: #00f291;
-            --danger: #ff4d4d;
-            --text-main: #ffffff;
-            --text-dim: #888888;
-            --border: rgba(255, 255, 255, 0.08);
-            --input-bg: #000000;
+            --bg-color: #050505; --card-bg: #111111; --accent: #e5c07b; --success: #00f291;
+            --danger: #ff4d4d; --text-main: #ffffff; --text-dim: #888888;
+            --border: rgba(255, 255, 255, 0.08); --input-bg: #000000; --main-font: 'Inter', sans-serif;
         }
+        [data-theme="light"] { --bg-color: #f4f7f9; --card-bg: #ffffff; --accent: #2563eb; --success: #10b981; --danger: #ef4444; --text-main: #0f172a; --text-dim: #64748b; --border: rgba(0, 0, 0, 0.06); --input-bg: #f8fafc; }
+        [data-theme="midnight"] { --bg-color: #020617; --card-bg: #0f172a; --accent: #818cf8; --success: #34d399; --danger: #fb7185; --text-main: #f8fafc; --text-dim: #94a3b8; --border: rgba(255, 255, 255, 0.05); --input-bg: #1e293b; }
+        [data-theme="blackgreen"] { --bg-color: #000000; --card-bg: #0a0a0a; --accent: #00ff41; --success: #00ff41; --danger: #ff003c; --text-main: #00ff41; --text-dim: #004411; --border: #003311; --input-bg: #050505; }
 
-        [data-theme="light"] {
-            --bg-color: #f5f5f7;
-            --card-bg: #ffffff;
-            --accent: #b8860b;
-            --success: #00a86b;
-            --danger: #cf352e;
-            --text-main: #1d1d1f;
-            --text-dim: #86868b;
-            --border: rgba(0, 0, 0, 0.1);
-            --input-bg: #f2f2f2;
-        }
-
-        [data-theme="gold"] {
-            --bg-color: #1a160d;
-            --card-bg: #2a2416;
-            --accent: #ffd700;
-            --success: #32cd32;
-            --danger: #ff4500;
-            --text-main: #fff5e6;
-            --text-dim: #b3a38b;
-            --border: rgba(255, 215, 0, 0.2);
-            --input-bg: #12100a;
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; transition: 0.3s; display: flex; justify-content: center; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        body { font-family: var(--main-font); background-color: var(--bg-color); color: var(--text-main); margin: 0; display: flex; justify-content: center; transition: 0.4s; }
+        .app-container { width: 100%; max-width: 500px; padding: 15px 15px 130px 15px; }
         
-        .app-container { width: 100%; max-width: 500px; padding: 15px 15px 120px 15px; }
-
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo { font-weight: 800; font-size: 0.9rem; color: var(--accent); text-transform: uppercase; }
-        .header-tools { display: flex; gap: 8px; align-items: center; }
-
-        #theme-toggle { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); padding: 5px; border-radius: 8px; font-size: 0.7rem; }
-        #current-time { font-family: 'JetBrains Mono', monospace; background: var(--input-bg); padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; border: 1px solid var(--border); }
-
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 12px; border-radius: 12px; border-top: 3px solid var(--accent); position: relative; overflow: hidden; }
-        .stat-card::after { content: '📈'; position: absolute; right: -5px; bottom: -5px; font-size: 2rem; opacity: 0.1; }
+        header { margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .top-row { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--accent); }
+        .theme-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); padding: 8px 14px; border-radius: 10px; font-size: 0.65rem; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         
-        .stat-label { font-size: 0.55rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
-        .stat-value { font-size: 1.1rem; font-weight: 800; margin-top: 4px; display: block; }
+        .session-tracker { display: flex; gap: 8px; background: var(--card-bg); padding: 10px; border-radius: 14px; border: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
+        .session-item { display: flex; align-items: center; gap: 6px; font-size: 0.55rem; font-weight: 700; color: var(--text-dim); white-space: nowrap; padding: 4px 10px; border-radius: 8px; background: var(--input-bg); }
+        .session-dot { width: 6px; height: 6px; border-radius: 50%; background: #333; }
+        .session-active { color: var(--text-main); border-color: var(--success); }
+        .session-active .session-dot { background: var(--success); box-shadow: 0 0 10px var(--success); }
 
-        .currency-hub { display: flex; gap: 6px; margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
-        .curr-pill { background: var(--card-bg); border: 1px solid var(--border); padding: 8px 12px; border-radius: 100px; white-space: nowrap; font-size: 0.65rem; }
+        .cal-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; margin-bottom: 15px; }
+        .cal-item { min-width: 60px; height: 72px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; }
+        .cal-item.is-today { border-color: var(--accent); background: rgba(0,255,65,0.05); }
+        .cal-item.is-rest { opacity: 0.4; border-style: dashed; }
 
-        .config-card { background: var(--card-bg); border-radius: 16px; padding: 15px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .input-group { display: flex; flex-direction: column; gap: 4px; }
-        .input-group.full { grid-column: span 2; }
-        .input-group label { font-size: 0.55rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
-        input, select { background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); padding: 10px; border-radius: 8px; font-size: 0.9rem; }
+        .config-card { background: var(--card-bg); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input, select { background: var(--input-bg); border: 1px solid var(--border); color: var(--text-main); padding: 14px; border-radius: 12px; font-size: 0.9rem; font-family: 'JetBrains Mono'; width: 100%; outline: none; }
+        .field label { font-size: 0.55rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; margin-bottom: 6px; display: block; }
 
-        .day-row { background: var(--card-bg); border-radius: 14px; margin-bottom: 12px; padding: 15px; border: 1px solid var(--border); }
-        .day-meta { display: flex; justify-content: space-between; margin-bottom: 12px; }
-        .day-title { font-weight: 800; font-size: 0.75rem; }
-        .day-target { font-size: 0.6rem; color: var(--accent); margin-top: 2px; }
+        .day-card { background: var(--card-bg); border-radius: 24px; margin-bottom: 15px; padding: 22px; border: 1px solid var(--border); position: relative; }
+        .day-header { border-left: 4px solid var(--accent); padding-left: 14px; margin-bottom: 20px; display: flex; justify-content: space-between; }
+        .rest-toggle { font-size: 0.6rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; cursor: pointer; border: 1px solid var(--border); color: var(--text-dim); }
+        .rest-active { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        .is-rest-day .layer-grid { display: none; }
+        .is-rest-day .rest-msg { display: block; }
+        .rest-msg { display: none; text-align: center; padding: 20px; font-style: italic; color: var(--text-dim); font-size: 0.8rem; }
 
-        .layers-wrapper { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 8px; }
-        .layer-node { background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 5px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .layer-node:active { transform: scale(0.95); }
-        .win { background: rgba(0, 242, 145, 0.15) !important; border-color: var(--success) !important; color: var(--success); }
-        .loss { background: rgba(255, 77, 77, 0.15) !important; border-color: var(--danger) !important; color: var(--danger); }
+        .layer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+        .node { background: var(--input-bg); border: 1px solid var(--border); border-radius: 14px; padding: 15px 10px; text-align: center; cursor: pointer; }
+        .win { background: rgba(0, 255, 65, 0.1) !important; border-color: var(--success) !important; color: var(--success); }
+        .loss { background: rgba(255, 0, 60, 0.1) !important; border-color: var(--danger) !important; color: var(--danger); }
 
-        .floating-footer { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 470px; background: var(--card-bg); border: 1px solid var(--border); padding: 12px 18px; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 8px 32px rgba(0,0,0,0.5); z-index: 1000; }
+        .footer-bar { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: calc(100% - 30px); max-width: 470px; background: var(--card-bg); border: 1px solid var(--border); padding: 20px 24px; border-radius: 28px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 20px 60px rgba(0,0,0,0.9); z-index: 1000; }
+        .footer-idr { font-weight: 800; font-size: 1.2rem; color: var(--accent); font-family: 'Outfit'; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
 <div class="app-container">
     <header>
-        <div class="logo">⚡ Trade List Management</div>
-        <div class="header-tools">
-            <select id="theme-toggle" onchange="changeTheme(this.value)">
-                <option value="dark">🌑 Dark</option>
-                <option value="light">☀️ Light</option>
-                <option value="gold">👑 Gold</option>
-            </select>
-            <div id="current-time">00:00:00</div>
+        <div class="top-row">
+            <div class="brand">Trader List</div>
+            <div class="controls" style="display: flex; align-items: center; gap: 10px;">
+                <button class="theme-btn" onclick="toggleTheme()">Mode</button>
+                <div id="clock" style="font-size: 0.8rem; color: var(--text-main); font-family: 'JetBrains Mono'; font-weight: 800;">00:00:00</div>
+            </div>
+        </div>
+        <div class="session-tracker">
+            <div class="session-item" id="sess-asia"><div class="session-dot"></div> ASIA</div>
+            <div class="session-item" id="sess-london"><div class="session-dot"></div> LONDON</div>
+            <div class="session-item" id="sess-ny"><div class="session-dot"></div> NEW YORK</div>
         </div>
     </header>
 
-    <div class="dashboard">
-        <div class="stat-card">
-            <span class="stat-label">Net Profit (Cent) 💰</span>
-            <span id="total-p" class="stat-value" style="color: var(--success);">+0.0</span>
-        </div>
-        <div class="stat-card">
-            <span class="stat-label">Win Rate % 🔥</span>
-            <span id="win-rate" class="stat-value" style="color: var(--accent);">0%</span>
-        </div>
-    </div>
-
-    <div class="currency-hub">
-        <div class="curr-pill">💼 Wallet: <b id="c-cent">0c</b></div>
-        <div class="curr-pill">💵 USD: <b id="c-usd">$0.00</b></div>
-        <div class="curr-pill">🇮🇩 IDR: <b id="c-idr">Rp0</b></div>
-    </div>
+    <div class="cal-scroll" id="calendar-strip"></div>
 
     <div class="config-card">
         <div class="grid-inputs">
-            <div class="input-group full">
-                <label>Select Market 📊</label>
-                <select id="market-select" onchange="saveConfig()">
-                    <optgroup label="Popular Metals">
-                        <option value="XAUUSD">🌟 GOLD (XAU/USD)</option>
-                        <option value="XAGUSD">🥈 SILVER (XAG/USD)</option>
-                    </optgroup>
-                    <optgroup label="Forex Major">
-                        <option value="EURUSD">🇪🇺 EUR/USD</option>
-                        <option value="GBPUSD">🇬🇧 GBP/USD</option>
-                        <option value="USDJPY">🇯🇵 USD/JPY</option>
-                        <option value="AUDUSD">🇦🇺 AUD/USD</option>
-                    </optgroup>
-                    <optgroup label="Crypto Assets">
-                        <option value="BTCUSD">₿ BITCOIN</option>
-                        <option value="ETHUSD">Ξ ETHEREUM</option>
-                    </optgroup>
+            <div class="field" style="grid-column: span 2;">
+                <label>Market Asset</label>
+                <input type="text" id="cfg-market" value="XAU/USD" onchange="sync()">
+            </div>
+            <div class="field">
+                <label>Account Type</label>
+                <select id="cfg-acc-type" onchange="sync()">
+                    <option value="standard">Standard</option>
+                    <option value="cent">Cent</option>
                 </select>
             </div>
-            <div class="input-group">
-                <label>Capital 💎</label>
-                <input type="number" id="capital" value="500" onchange="saveConfig()">
+            <div class="field">
+                <label>Start Date</label>
+                <input type="date" id="start-date-input" onchange="sync()">
             </div>
-            <div class="input-group">
-                <label>Risk/Layer % ⚠️</label>
-                <input type="number" id="risk-percent" value="1" onchange="saveConfig()">
+            <div class="field">
+                <label>Capital (USD)</label>
+                <input type="number" id="cfg-cap" value="500" onchange="sync()">
             </div>
-            <div class="input-group">
-                <label>Reward Ratio 🎯</label>
-                <input type="number" id="risk-ratio" value="2" onchange="saveConfig()">
+            <div class="field">
+                <label>Capital (IDR)</label>
+                <input type="text" id="cfg-idr-val" readonly style="opacity: 0.5;">
             </div>
-            <div class="input-group">
-                <label>USD/IDR Rate 🏦</label>
-                <input type="number" id="usd-rate" value="16200" onchange="saveConfig()">
+            <div class="field">
+                <label>Layers</label>
+                <input type="number" id="cfg-layer" value="3" onchange="sync()">
             </div>
-            <div class="input-group">
-                <label>Layers 📚</label>
-                <input type="number" id="layers" value="3" onchange="saveConfig()">
-            </div>
-            <div class="input-group">
-                <label>Start Date 📅</label>
-                <input type="date" id="start-date" onchange="saveConfig()">
+            <div class="field">
+                <label>Risk %</label>
+                <input type="number" id="cfg-risk" value="1" onchange="sync()">
             </div>
         </div>
     </div>
 
-    <div id="journal-list"></div>
+    <div id="main-journal"></div>
 
-    <div class="floating-footer">
+    <div class="footer-bar">
         <div>
-            <div style="font-size: 0.5rem; color: var(--text-dim); letter-spacing: 0.5px;">EST. BALANCE TOTAL 🏆</div>
-            <div id="float-idr" style="font-weight: 800; font-size: 0.9rem; color: var(--accent);">Rp0</div>
+            <div style="font-size: 0.55rem; color: var(--text-dim); font-weight: 800;">TOTAL EQUITY (IDR)</div>
+            <div id="footer-idr" class="footer-idr">Rp 0</div>
         </div>
         <div style="text-align: right;">
-            <div id="display-market" style="font-size: 0.7rem; font-weight: 800; color: var(--success);">XAUUSD</div>
-            <div style="font-size: 0.5rem; color: var(--text-dim);">LIVE TRADING 🟢</div>
+            <div id="stat-wr" style="font-size: 0.95rem; font-weight: 800; color: var(--success);">WR: 0%</div>
+            <div id="stat-profit" style="font-size: 0.65rem; color: var(--text-dim); font-family: 'JetBrains Mono';">+0.00</div>
         </div>
     </div>
 </div>
 
 <script>
-    function updateClock() {
-        document.getElementById('current-time').innerText = new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta' });
-    }
-    setInterval(updateClock, 1000);
+    const storageKey = 'TL_AUTO_V7';
+    const themes = ['dark', 'light', 'midnight', 'blackgreen'];
+    let currentThemeIdx = 0;
 
-    function changeTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('trade_theme', theme);
+    function toggleTheme() {
+        currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+        document.body.setAttribute('data-theme', themes[currentThemeIdx]);
+        localStorage.setItem('TL_THEME_V7', themes[currentThemeIdx]);
     }
 
-    function saveConfig() {
-        const config = {
-            market: document.getElementById('market-select').value,
-            cap: document.getElementById('capital').value,
-            rate: document.getElementById('usd-rate').value,
-            riskP: document.getElementById('risk-percent').value,
-            riskR: document.getElementById('risk-ratio').value,
-            layers: document.getElementById('layers').value,
-            date: document.getElementById('start-date').value
+    function updateSessions() {
+        const now = new Date();
+        const hr = now.getHours();
+        document.getElementById('sess-asia').classList.toggle('session-active', (hr >= 7 && hr < 14));
+        document.getElementById('sess-london').classList.toggle('session-active', (hr >= 14 && hr < 22));
+        document.getElementById('sess-ny').classList.toggle('session-active', (hr >= 19 || hr < 3));
+        document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
+    }
+
+    function sync() {
+        const data = {
+            market: document.getElementById('cfg-market').value || 'XAU/USD',
+            accType: document.getElementById('cfg-acc-type').value,
+            cap: document.getElementById('cfg-cap').value,
+            risk: document.getElementById('cfg-risk').value,
+            layers: document.getElementById('cfg-layer').value,
+            startDate: document.getElementById('start-date-input').value
         };
-        localStorage.setItem('trade_mgmt_vfinal', JSON.stringify(config));
-        renderJournal();
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        render();
     }
 
-    function renderJournal() {
-        const conf = JSON.parse(localStorage.getItem('trade_mgmt_vfinal')) || { market: 'XAUUSD', cap: 500, rate: 16200, riskP: 1, riskR: 2, layers: 3 };
-        const list = document.getElementById('journal-list');
-        list.innerHTML = '';
-        document.getElementById('display-market').innerText = conf.market;
+    function toggleRest(dayIdx) {
+        const currentVal = localStorage.getItem(`TL_REST_D${dayIdx}`);
+        if (currentVal === 'REST') localStorage.setItem(`TL_REST_D${dayIdx}`, 'WORK');
+        else localStorage.setItem(`TL_REST_D${dayIdx}`, 'REST');
+        render();
+    }
+
+    function render() {
+        const conf = JSON.parse(localStorage.getItem(storageKey)) || { market: 'XAU/USD', accType: 'standard', cap: 500, risk: 1, layers: 3, startDate: new Date().toISOString().split('T')[0] };
+        const idrRate = 16200;
+        const idrCapital = conf.accType === 'cent' ? (conf.cap / 100) * idrRate : conf.cap * idrRate;
+        document.getElementById('cfg-idr-val').value = `Rp ${idrCapital.toLocaleString('id-ID')}`;
+
+        const journal = document.getElementById('main-journal');
+        const cal = document.getElementById('calendar-strip');
+        journal.innerHTML = ''; cal.innerHTML = '';
+
+        const start = new Date(conf.startDate);
+        const today = new Date().setHours(0,0,0,0);
+        let totalP = 0, winC = 0, lossC = 0;
         
-        let totalProfit = 0;
-        let totalWin = 0;
-        let totalLoss = 0;
+        const riskAmount = conf.cap * (conf.risk / 100);
+        const tpAmount = riskAmount * 2;
 
-        const slCent = (conf.cap * (conf.riskP / 100));
-        const tpCent = slCent * conf.riskR;
-
-        for(let d=1; d<=30; d++) {
-            const card = document.createElement('div');
-            card.className = 'day-row';
+        for(let d=0; d<30; d++) {
+            const currentDay = new Date(start);
+            currentDay.setDate(start.getDate() + d);
+            const isToday = currentDay.setHours(0,0,0,0) === today;
             
-            let dStr = "Ready to Trade";
-            if(conf.date) {
-                let dt = new Date(conf.date);
-                dt.setDate(dt.getDate() + (d-1));
-                dStr = dt.toLocaleDateString('id-ID', {weekday:'short', day:'numeric', month:'short'});
-            }
+            // Logika Auto Rest (Sabtu=6, Minggu=0)
+            const dayOfWeek = currentDay.getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+            const manualStatus = localStorage.getItem(`TL_REST_D${d}`);
+            
+            // Jika tidak ada setting manual, ikuti weekend. Jika ada, ikuti manual.
+            const isRest = manualStatus ? (manualStatus === 'REST') : isWeekend;
 
+            const calItem = document.createElement('div');
+            calItem.className = `cal-item ${isToday ? 'is-today' : ''} ${isRest ? 'is-rest' : ''}`;
+            calItem.innerHTML = `<span style="font-size:0.5rem;color:var(--text-dim)">${currentDay.toLocaleDateString('id-ID',{weekday:'short'})}</span><span style="font-weight:800">${currentDay.getDate()}</span>`;
+            calItem.onclick = () => document.getElementById(`day-${d}`).scrollIntoView();
+            cal.appendChild(calItem);
+
+            const card = document.createElement('div');
+            card.className = `day-card ${isRest ? 'is-rest-day' : ''}`; card.id = `day-${d}`;
             card.innerHTML = `
-                <div class="day-meta">
+                <div class="day-header">
                     <div>
-                        <div class="day-title">⚔️ DAY ${d} - ${conf.market}</div>
-                        <div class="day-target">🎯 TP +${tpCent.toFixed(1)}c | 🛡️ SL -${slCent.toFixed(1)}c</div>
+                        <h3>DAY ${d+1} — ${currentDay.toLocaleDateString('id-ID',{day:'numeric',month:'short'})}</h3>
+                        <p style="font-size:0.6rem; color:var(--text-dim);">SL: -${riskAmount.toFixed(1)} | TP: +${tpAmount.toFixed(1)}</p>
                     </div>
-                    <span class="day-date">${dStr}</span>
+                    <div class="rest-toggle ${isRest ? 'rest-active' : ''}" onclick="toggleRest(${d})">
+                        ${isRest ? 'REST DAY' : 'MARKET OPEN'}
+                    </div>
                 </div>
-                <div class="layers-wrapper" id="grid-d${d}"></div>
+                <div class="rest-msg">${isWeekend ? 'Akhir Pekan (Otomatis)' : 'Libur Manual'}</div>
+                <div class="layer-grid" id="grid-${d}"></div>
             `;
-            list.appendChild(card);
+            journal.appendChild(card);
 
-            const grid = document.getElementById(`grid-d${d}`);
-            for(let l=1; l<=conf.layers; l++) {
-                const key = `tmf_d${d}_l${l}`;
-                const state = localStorage.getItem(key);
-                const node = document.createElement('div');
-                node.className = `layer-node ${state === 'W' ? 'win' : state === 'L' ? 'loss' : ''}`;
-                
-                let val = `Pos ${l}`;
-                let icon = '⚪';
-                if(state === 'W') { totalProfit += tpCent; totalWin++; val = `+${tpCent.toFixed(1)}`; icon = '✅'; }
-                if(state === 'L') { totalProfit -= slCent; totalLoss++; val = `-${slCent.toFixed(1)}`; icon = '❌'; }
+            if (!isRest) {
+                for(let l=1; l<=conf.layers; l++) {
+                    const key = `TL_V7_${conf.market}_D${d}_L${l}`;
+                    const val = localStorage.getItem(key);
+                    const node = document.createElement('div');
+                    node.className = `node ${val === 'W' ? 'win' : val === 'L' ? 'loss' : ''}`;
+                    
+                    if(val === 'W') { totalP += tpAmount; winC++; node.innerHTML = `<span style="font-weight:800">+${tpAmount.toFixed(1)}</span>`; }
+                    else if(val === 'L') { totalP -= riskAmount; lossC++; node.innerHTML = `<span style="font-weight:800">-${riskAmount.toFixed(1)}</span>`; }
+                    else { node.innerHTML = `<span style="font-size:0.6rem; color:var(--text-dim)">LAYER ${l}</span>`; }
 
-                node.innerHTML = `<span class="node-label">${val}</span><span class="node-status">${icon}</span>`;
-                node.onclick = () => {
-                    if(!state) localStorage.setItem(key, 'W');
-                    else if(state === 'W') localStorage.setItem(key, 'L');
-                    else localStorage.removeItem(key);
-                    renderJournal();
-                };
-                grid.appendChild(node);
+                    node.onclick = () => {
+                        if(!val) localStorage.setItem(key, 'W');
+                        else if(val === 'W') localStorage.setItem(key, 'L');
+                        else localStorage.removeItem(key);
+                        render();
+                    };
+                    document.getElementById(`grid-${d}`).appendChild(node);
+                }
             }
         }
+
+        const profitUSD = conf.accType === 'cent' ? (totalP / 100) : totalP;
+        const totalEquityIDR = idrCapital + (profitUSD * idrRate);
         
-        const profitEl = document.getElementById('total-p');
-        profitEl.innerText = (totalProfit >= 0 ? '🚀 +' : '🔻 ') + totalProfit.toFixed(1);
-        profitEl.style.color = totalProfit >= 0 ? 'var(--success)' : 'var(--danger)';
-
-        const wr = (totalWin + totalLoss) > 0 ? (totalWin / (totalWin + totalLoss) * 100).toFixed(0) : 0;
-        document.getElementById('win-rate').innerText = (wr >= 60 ? '🔥 ' : '📊 ') + wr + '%';
-
-        const finalCent = parseFloat(conf.cap) + totalProfit;
-        const finalIdr = (finalCent / 100) * conf.rate;
-
-        document.getElementById('c-cent').innerText = finalCent.toFixed(0) + 'c';
-        document.getElementById('c-usd').innerText = '$' + (finalCent/100).toFixed(2);
-        const idrStr = 'Rp' + Math.floor(finalIdr).toLocaleString('id-ID');
-        document.getElementById('c-idr').innerText = idrStr;
-        document.getElementById('float-idr').innerText = idrStr;
+        document.getElementById('stat-profit').innerText = `${profitUSD >= 0 ? '+' : ''}${profitUSD.toFixed(2)} USD`;
+        document.getElementById('stat-wr').innerText = `WR: ${(winC+lossC > 0 ? (winC/(winC+lossC)*100) : 0).toFixed(0)}%`;
+        document.getElementById('footer-idr').innerText = `Rp ${totalEquityIDR.toLocaleString('id-ID')}`;
     }
 
-    const savedTheme = localStorage.getItem('trade_theme') || 'dark';
-    changeTheme(savedTheme);
-    document.getElementById('theme-toggle').value = savedTheme;
-
-    const saved = JSON.parse(localStorage.getItem('trade_mgmt_vfinal'));
-    if(saved) {
-        document.getElementById('market-select').value = saved.market;
-        document.getElementById('capital').value = saved.cap;
-        document.getElementById('usd-rate').value = saved.rate;
-        document.getElementById('risk-percent').value = saved.riskP;
-        document.getElementById('risk-ratio').value = saved.riskR;
-        document.getElementById('layers').value = saved.layers;
-        document.getElementById('start-date').value = saved.date || '';
+    window.onload = () => {
+        const savedTheme = localStorage.getItem('TL_THEME_V7') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        currentThemeIdx = themes.indexOf(savedTheme);
+        
+        const saved = JSON.parse(localStorage.getItem(storageKey));
+        if(saved) {
+            document.getElementById('cfg-market').value = saved.market;
+            document.getElementById('cfg-acc-type').value = saved.accType;
+            document.getElementById('cfg-cap').value = saved.cap;
+            document.getElementById('cfg-risk').value = saved.risk;
+            document.getElementById('cfg-layer').value = saved.layers;
+            document.getElementById('start-date-input').value = saved.startDate;
+        } else {
+            document.getElementById('start-date-input').value = new Date().toISOString().split('T')[0];
+            sync();
+        }
+        setInterval(updateSessions, 1000);
+        updateSessions();
+        render();
     }
-    renderJournal();
-    updateClock();
 </script>
 </body>
 </html>
