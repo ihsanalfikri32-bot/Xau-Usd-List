@@ -3,195 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XAU/USD Konsisten Challenge 📈</title>
+    <title>TRADE LIST - Super Dashboard 📈</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
-            --bg: #000000;
-            --card: #0a0a0a;
-            --accent: #00d2ff;
-            --success: #39ff14; 
-            --danger: #ff3131;  
-            --rest: #ffea00;    
-            --text: #ffffff;
+            --bg: #020202; --card: #0d0d0d; --accent: #00d2ff;
+            --success: #00ff88; --danger: #ff3131; --warning: #ffea00; --text: #ffffff;
         }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            margin: 0; padding: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg); color: var(--text); margin: 0; padding: 10px;
             display: flex; flex-direction: column; align-items: center;
         }
-        .container { width: 100%; max-width: 400px; }
+        .container { width: 100%; max-width: 480px; padding-bottom: 50px; }
         
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 15px; }
-        .header h1 { color: var(--accent); margin: 0; font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase; }
+        /* Glassmorphism Clock */
+        .market-clock {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
+            padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px;
+            border: 1px solid rgba(0, 210, 255, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #current-time { font-family: 'Courier New', monospace; font-size: 1.8rem; color: var(--accent); font-weight: 900; text-shadow: 0 0 15px var(--accent); }
+        .session-info { font-size: 0.7rem; color: #777; margin-top: 8px; font-weight: bold; letter-spacing: 2px; }
+
+        /* Super Config Panel */
+        .config-panel {
+            background: var(--card); padding: 20px; border-radius: 15px; 
+            margin-bottom: 25px; border: 1px solid #1a1a1a; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        }
+        .config-group { display: flex; flex-direction: column; gap: 6px; }
+        .config-group label { font-size: 0.6rem; color: #555; text-transform: uppercase; font-weight: 800; }
+        .config-group input, .config-group select {
+            background: #000; border: 1px solid #222; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.85rem; outline: none; transition: 0.3s;
+        }
+        .config-group input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
+
+        /* Stats Summary */
+        .summary { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+        }
+        .stat-box { background: #111; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); }
+        .stat-label { font-size: 0.6rem; color: #666; display: block; margin-bottom: 5px; }
+        .stat-val { font-size: 1.1rem; font-weight: bold; }
+
+        /* Journal Cards */
+        .day-card { 
+            background: var(--card); margin-bottom: 15px; padding: 18px; 
+            border-radius: 12px; border: 1px solid #1a1a1a; transition: 0.3s;
+        }
+        .day-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .risk-badge { font-size: 0.6rem; background: rgba(0, 210, 255, 0.1); color: var(--accent); padding: 3px 8px; border-radius: 5px; margin-top: 10px; display: inline-block; }
         
-        .setup-section {
-            background: #111; padding: 15px; border-radius: 10px; 
-            margin-bottom: 20px; border: 1px dashed #333;
+        .layer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-top: 15px; }
+        .layer-btn { 
+            aspect-ratio: 1/1; border: 1px solid #222; background: #050505; color: #444; 
+            border-radius: 8px; font-size: 0.7rem; font-weight: 900; transition: 0.2s; cursor: pointer;
         }
-        .setup-section label { display: block; font-size: 0.7rem; color: #888; margin-bottom: 5px; }
-        .setup-section input {
-            width: 100%; background: #000; border: 1px solid var(--accent);
-            color: white; padding: 8px; border-radius: 5px; outline: none;
-        }
+        .layer-win { background: var(--success) !important; color: #000 !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
+        .layer-loss { background: var(--danger) !important; color: #fff !important; border-color: var(--danger) !important; }
 
-        .progress-box { background: #111; height: 8px; border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid #222; }
-        #p-bar { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 10px var(--accent); transition: 0.5s; }
-
-        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .info-card { background: var(--card); padding: 10px; border-radius: 8px; border: 1px solid #333; text-align: center; font-size: 0.7rem; }
-
-        .day-card { background: var(--card); margin-bottom: 12px; padding: 15px; border-radius: 10px; border: 1px solid #222; position: relative; }
-        .date-badge { position: absolute; top: 10px; right: 15px; font-size: 0.6rem; color: var(--accent); font-weight: bold; }
-        
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
-        .day-label { font-weight: bold; font-size: 0.9rem; color: #eee; }
-        .day-val { font-size: 0.7rem; color: #666; margin-top: 3px; display: block; }
-
-        .note-area {
-            width: 100%; background: #000; border: 1px solid #222; 
-            color: #888; font-size: 0.7rem; margin-top: 10px; padding: 5px;
-            border-radius: 4px; resize: none; outline: none;
-        }
-
-        .btns { display: flex; gap: 10px; }
-        .btn {
-            width: 45px; height: 45px; border-radius: 8px; border: 1px solid #333;
-            cursor: pointer; font-size: 1.1rem; background: #000; color: #444;
-            font-weight: bold; transition: 0.2s;
-        }
-
-        .win-active { color: var(--success) !important; border-color: var(--success) !important; box-shadow: 0 0 10px var(--success); }
-        .loss-active { color: var(--danger) !important; border-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
-        .card-win { border-color: var(--success) !important; }
-        .card-loss { border-color: var(--danger) !important; }
-        .card-rest { border-left: 4px solid var(--rest); }
-
-        .footer { text-align: center; margin-top: 30px; color: #333; font-size: 0.7rem; padding-bottom: 20px; }
-        .reset-btn { margin-top: 20px; font-size: 0.6rem; color: #444; cursor: pointer; text-decoration: underline; }
+        .footer { text-align: center; margin-top: 30px; font-size: 0.6rem; color: #333; text-transform: uppercase; letter-spacing: 3px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>🏆 XAU/USD KONSISTEN</h1>
-        <div class="progress-box"><div id="p-bar"></div></div>
-        <div id="stat" style="font-size: 0.7rem; color: #555;">PROGRES: 0/30 HARI 🔥</div>
+    <div class="market-clock">
+        <div id="current-time">00:00:00</div>
+        <div class="session-info">MARKET SESSION GMT+7 🌐</div>
     </div>
 
-    <div class="setup-section">
-        <label>📅 TANGGAL MULAI (DAY 1):</label>
-        <input type="date" id="start-date" onchange="updateCalendar()">
+    <div class="config-panel">
+        <div class="config-group" style="grid-column: span 2;">
+            <label>Master Strategy / Market Name 💎</label>
+            <input type="text" id="m-name" value="XAU/USD CONSISTENT" onchange="saveConfig()">
+        </div>
+        <div class="config-group">
+            <label>Base Capital 💰</label>
+            <input type="number" id="capital" value="500" onchange="saveConfig()">
+        </div>
+        <div class="config-group">
+            <label>Account Model 🏦</label>
+            <select id="acc-type" onchange="saveConfig()">
+                <option value="c">Cent Account</option>
+                <option value="$">Standard ($)</option>
+                <option value="Prop">Prop Firm</option>
+            </select>
+        </div>
+        <div class="config-group">
+            <label>Risk Ratio (1:X) 🛡️</label>
+            <input type="number" id="risk-ratio" value="2" onchange="saveConfig()">
+        </div>
+        <div class="config-group">
+            <label>Daily Layer Limit 🪜</label>
+            <input type="number" id="layers" value="3" onchange="saveConfig()">
+        </div>
+        <div class="config-group" style="grid-column: span 2;">
+            <label>Challenge Start Date 📅</label>
+            <input type="date" id="start-date" onchange="saveConfig()">
+        </div>
     </div>
 
-    <div class="summary-grid">
-        <div class="info-card">💰 CAPITAL: 500c<br>📊 LOT: 0.01</div>
-        <div class="info-card">💵 TOTAL PROFIT:<br><span id="total-p" style="color:var(--success)">0c</span></div>
+    <div class="summary">
+        <div class="stat-box">
+            <span class="stat-label">ACCUMULATED PROFIT</span>
+            <span class="stat-val" id="total-p" style="color:var(--success)">0</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">WIN RATE %</span>
+            <span class="stat-val" id="win-rate" style="color:var(--accent)">0%</span>
+        </div>
     </div>
 
-    <div id="list"></div>
+    <div id="journal-list"></div>
 
     <div class="footer">
-        "PLAN THE TRADE, TRADE THE PLAN" 🚀<br>
-        2026 CALENDAR SYSTEM
-        <div class="reset-btn" onclick="resetJournal()">🗑️ RESET SEMUA DATA</div>
+        Trade List Super System • Alpha 2026
     </div>
 </div>
 
 <script>
-    const list = document.getElementById('list');
-    const dateInput = document.getElementById('start-date');
+    function updateClock() {
+        const timeStr = new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta' });
+        document.getElementById('current-time').innerText = timeStr;
+    }
+    setInterval(updateClock, 1000);
 
-    if(localStorage.getItem('xau-start-date')) {
-        dateInput.value = localStorage.getItem('xau-start-date');
+    function saveConfig() {
+        const config = {
+            name: document.getElementById('m-name').value,
+            date: document.getElementById('start-date').value,
+            cap: document.getElementById('capital').value,
+            type: document.getElementById('acc-type').value,
+            risk: document.getElementById('risk-ratio').value,
+            layers: document.getElementById('layers').value
+        };
+        localStorage.setItem('super_trade_config', JSON.stringify(config));
+        renderJournal();
     }
 
-    function updateCalendar() {
-        localStorage.setItem('xau-start-date', dateInput.value);
-        renderList();
-    }
-
-    function formatDate(date) {
-        const options = { weekday: 'short', day: 'numeric', month: 'short' };
-        return date.toLocaleDateString('id-ID', options);
-    }
-
-    function renderList() {
+    function renderJournal() {
+        const conf = JSON.parse(localStorage.getItem('super_trade_config')) || { name: 'XAU/USD', cap: 500, type: 'c', risk: 2, layers: 3 };
+        const list = document.getElementById('journal-list');
         list.innerHTML = '';
-        let startDate = dateInput.value ? new Date(dateInput.value) : null;
-        let done = 0;
-        let profit = 0;
+        
+        let totalProfit = 0;
+        let totalWin = 0;
+        let totalLoss = 0;
 
-        for (let i = 1; i <= 30; i++) {
-            let currentDayDate = "";
-            let isRest = false;
-
-            if (startDate) {
-                let d = new Date(startDate);
-                d.setDate(startDate.getDate() + (i - 1));
-                currentDayDate = formatDate(d);
-                if (d.getDay() === 6 || d.getDay() === 0) isRest = true;
-            }
-
-            const status = localStorage.getItem('xau-v3-'+i);
-            const note = localStorage.getItem('note-xau-v3-'+i) || '';
-            
-            if(status) {
-                done++;
-                if(status === 'win') profit += 50;
-                if(status === 'loss') profit -= 25;
-            }
-
+        for(let d=1; d<=30; d++) {
             const card = document.createElement('div');
-            card.className = `day-card ${isRest ? 'card-rest' : ''} ${status === 'win' ? 'card-win' : ''} ${status === 'loss' ? 'card-loss' : ''}`;
+            card.className = 'day-card';
             
-            let actionHtml = isRest ? 
-                `<button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">✅</button>` :
-                `<button class="btn ${status === 'loss' ? 'loss-active' : ''}" onclick="set(${i},'loss')">❌</button>
-                 <button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">✅</button>`;
+            let dStr = "Set Date";
+            if(conf.date) {
+                let dt = new Date(conf.date);
+                dt.setDate(dt.getDate() + (d-1));
+                dStr = dt.toLocaleDateString('id-ID', {weekday:'short', day:'numeric', month:'short'});
+                if(dt.getDay() === 6 || dt.getDay() === 0) card.style.opacity = "0.5";
+            }
 
             card.innerHTML = `
-                <div class="date-badge">${currentDayDate}</div>
-                <div class="card-header">
+                <div class="day-header">
                     <div>
-                        <span class="day-label">DAY ${i} ${isRest ? '☕' : '⚔️'}</span>
-                        <span class="day-val">${isRest ? 'MARKET TUTUP' : '🎯 TP: 50c | 🛡️ SL: 25c'}</span>
+                        <div style="font-weight:900; font-size:0.8rem; letter-spacing:1px">${conf.name} DAY ${d}</div>
+                        <div class="risk-badge">REWARD RATIO 1:${conf.risk}</div>
                     </div>
-                    <div class="btns">${actionHtml}</div>
+                    <span style="font-size:0.7rem; color:var(--accent); font-weight:bold">${dStr}</span>
                 </div>
-                <textarea class="note-area" placeholder="Analisa/Emosi hari ini..." onkeyup="saveNote(${i}, this.value)">${note}</textarea>
+                <div class="layer-grid" id="grid-d${d}"></div>
             `;
             list.appendChild(card);
+
+            const grid = document.getElementById(`grid-d${d}`);
+            for(let l=1; l<=conf.layers; l++) {
+                const key = `sl_d${d}_l${l}`;
+                const st = localStorage.getItem(key);
+                const btn = document.createElement('button');
+                btn.className = `layer-btn ${st === 'W' ? 'layer-win' : st === 'L' ? 'layer-loss' : ''}`;
+                btn.innerText = st || l;
+                
+                if(st === 'W') { totalProfit += (1 * conf.risk); totalWin++; }
+                if(st === 'L') { totalProfit -= 1; totalLoss++; }
+
+                btn.onclick = () => {
+                    if(!st) localStorage.setItem(key, 'W');
+                    else if(st === 'W') localStorage.setItem(key, 'L');
+                    else localStorage.removeItem(key);
+                    renderJournal();
+                };
+                grid.appendChild(btn);
+            }
         }
-
-        document.getElementById('p-bar').style.width = (done/30*100)+'%';
-        document.getElementById('stat').innerText = 'PROGRES: ' + done + '/30 HARI SELESAI 🔥';
-        document.getElementById('total-p').innerText = profit + 'c';
+        
+        document.getElementById('total-p').innerText = totalProfit.toFixed(1) + conf.type;
+        const wr = (totalWin + totalLoss) > 0 ? (totalWin / (totalWin + totalLoss) * 100).toFixed(0) : 0;
+        document.getElementById('win-rate').innerText = wr + '%';
     }
 
-    function set(d, s) {
-        const key = 'xau-v3-'+d;
-        if (localStorage.getItem(key) === s) localStorage.removeItem(key);
-        else localStorage.setItem(key, s);
-        renderList();
+    const saved = JSON.parse(localStorage.getItem('super_trade_config'));
+    if(saved) {
+        document.getElementById('m-name').value = saved.name;
+        document.getElementById('start-date').value = saved.date;
+        document.getElementById('capital').value = saved.cap;
+        document.getElementById('acc-type').value = saved.type;
+        document.getElementById('risk-ratio').value = saved.risk;
+        document.getElementById('layers').value = saved.layers;
     }
-
-    function saveNote(d, val) {
-        localStorage.setItem('note-xau-v3-'+d, val);
-    }
-
-    function resetJournal() {
-        if(confirm('Hapus semua progres dan catatan?')) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-
-    renderList();
+    renderJournal();
+    updateClock();
 </script>
-
 </body>
 </html>
