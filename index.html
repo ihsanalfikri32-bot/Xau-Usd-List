@@ -3,147 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRADE LIST - Super Dashboard 📈</title>
+    <title>XAU/USD - Consistent Challenge ⚖️</title>
+    <!-- Import Font Modern -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
-            --bg: #020202; --card: #0d0d0d; --accent: #00d2ff;
-            --success: #00ff88; --danger: #ff3131; --warning: #ffea00; --text: #ffffff;
+            --bg-color: #050505;
+            --card-bg: #121212;
+            --accent: #e5c07b; /* Gold accent for XAU/USD feel */
+            --success: #00f291;
+            --danger: #ff4d4d;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
         }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg); color: var(--text); margin: 0; padding: 10px;
-            display: flex; flex-direction: column; align-items: center;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            line-height: 1.5;
         }
-        .container { width: 100%; max-width: 480px; padding-bottom: 50px; }
+
+        /* Layout Container */
+        .app-container {
+            width: 100%;
+            max-width: 600px; /* Optimal for Desktop & Mobile */
+            min-height: 100vh;
+            padding: 20px 16px 100px 16px;
+        }
+
+        /* Header Section */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px; color: var(--accent); }
         
-        /* Glassmorphism Clock */
-        .market-clock {
-            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px);
-            padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 20px;
-            border: 1px solid rgba(0, 210, 255, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        #current-time {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--glass);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
         }
-        #current-time { font-family: 'Courier New', monospace; font-size: 1.8rem; color: var(--accent); font-weight: 900; text-shadow: 0 0 15px var(--accent); }
-        .session-info { font-size: 0.7rem; color: #777; margin-top: 8px; font-weight: bold; letter-spacing: 2px; }
 
-        /* Super Config Panel */
-        .config-panel {
-            background: var(--card); padding: 20px; border-radius: 15px; 
-            margin-bottom: 25px; border: 1px solid #1a1a1a; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+        /* Pro Stats Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
         }
-        .config-group { display: flex; flex-direction: column; gap: 6px; }
-        .config-group label { font-size: 0.6rem; color: #555; text-transform: uppercase; font-weight: 800; }
-        .config-group input, .config-group select {
-            background: #000; border: 1px solid #222; color: #fff; padding: 10px; border-radius: 8px; font-size: 0.85rem; outline: none; transition: 0.3s;
-        }
-        .config-group input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0, 210, 255, 0.2); }
 
-        /* Stats Summary */
-        .summary { 
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
         }
-        .stat-box { background: #111; padding: 15px; border-radius: 10px; border-bottom: 3px solid var(--accent); }
-        .stat-label { font-size: 0.6rem; color: #666; display: block; margin-bottom: 5px; }
-        .stat-val { font-size: 1.1rem; font-weight: bold; }
 
-        /* Journal Cards */
-        .day-card { 
-            background: var(--card); margin-bottom: 15px; padding: 18px; 
-            border-radius: 12px; border: 1px solid #1a1a1a; transition: 0.3s;
+        .stat-card::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent); opacity: 0.5;
         }
-        .day-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .risk-badge { font-size: 0.6rem; background: rgba(0, 210, 255, 0.1); color: var(--accent); padding: 3px 8px; border-radius: 5px; margin-top: 10px; display: inline-block; }
-        
-        .layer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 8px; margin-top: 15px; }
-        .layer-btn { 
-            aspect-ratio: 1/1; border: 1px solid #222; background: #050505; color: #444; 
-            border-radius: 8px; font-size: 0.7rem; font-weight: 900; transition: 0.2s; cursor: pointer;
-        }
-        .layer-win { background: var(--success) !important; color: #000 !important; border-color: var(--success) !important; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
-        .layer-loss { background: var(--danger) !important; color: #fff !important; border-color: var(--danger) !important; }
 
-        .footer { text-align: center; margin-top: 30px; font-size: 0.6rem; color: #333; text-transform: uppercase; letter-spacing: 3px; }
+        .stat-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        .stat-value { font-size: 1.2rem; font-weight: 800; margin-top: 4px; display: block; }
+
+        /* Recommendation Banner */
+        .recommendation {
+            background: linear-gradient(90deg, rgba(229,192,123,0.1), transparent);
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 4px 12px 12px 4px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .rec-box { text-align: center; }
+        .rec-box small { font-size: 0.6rem; color: var(--text-dim); display: block; margin-bottom: 2px; }
+        .rec-box span { font-weight: 800; font-size: 0.9rem; }
+
+        /* Multi-Currency Hub */
+        .currency-hub {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+
+        .curr-pill {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 100px;
+            white-space: nowrap;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .curr-pill b { color: var(--accent); }
+
+        /* Settings Accordion */
+        .config-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .input-group { display: flex; flex-direction: column; gap: 6px; }
+        .input-group label { font-size: 0.65rem; color: var(--text-dim); font-weight: 600; }
+        .input-group input {
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--accent); }
+
+        /* Journal List */
+        .day-row {
+            background: var(--card-bg);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .day-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .day-title { font-weight: 800; font-size: 0.9rem; }
+        .day-date { font-size: 0.7rem; color: var(--text-dim); }
+
+        .layers-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .layer-node {
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .node-label { font-size: 0.6rem; color: var(--text-dim); display: block; margin-bottom: 4px; }
+        .node-status { font-weight: 800; font-size: 0.75rem; }
+
+        .win { background: rgba(0, 242, 145, 0.1) !important; border-color: var(--success) !important; color: var(--success); }
+        .loss { background: rgba(255, 77, 77, 0.1) !important; border-color: var(--danger) !important; color: var(--danger); }
+
+        /* Floating Summary for Mobile */
+        .floating-footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 32px);
+            max-width: 568px;
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Desktop Adjustments */
+        @media (min-width: 768px) {
+            .app-container { padding-top: 50px; }
+            .grid-inputs { grid-template-columns: repeat(3, 1fr); }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="market-clock">
+<div class="app-container">
+    <header>
+        <div class="logo">XAU/USD PRO</div>
         <div id="current-time">00:00:00</div>
-        <div class="session-info">MARKET SESSION GMT+7 🌐</div>
-    </div>
+    </header>
 
-    <div class="config-panel">
-        <div class="config-group" style="grid-column: span 2;">
-            <label>Master Strategy / Market Name 💎</label>
-            <input type="text" id="m-name" value="XAU/USD CONSISTENT" onchange="saveConfig()">
+    <!-- Dashboard Stats -->
+    <div class="dashboard">
+        <div class="stat-card">
+            <span class="stat-label">Net P/L (Cent)</span>
+            <span id="total-p" class="stat-value" style="color: var(--success);">0.00</span>
         </div>
-        <div class="config-group">
-            <label>Base Capital 💰</label>
-            <input type="number" id="capital" value="500" onchange="saveConfig()">
-        </div>
-        <div class="config-group">
-            <label>Account Model 🏦</label>
-            <select id="acc-type" onchange="saveConfig()">
-                <option value="c">Cent Account</option>
-                <option value="$">Standard ($)</option>
-                <option value="Prop">Prop Firm</option>
-            </select>
-        </div>
-        <div class="config-group">
-            <label>Risk Ratio (1:X) 🛡️</label>
-            <input type="number" id="risk-ratio" value="2" onchange="saveConfig()">
-        </div>
-        <div class="config-group">
-            <label>Daily Layer Limit 🪜</label>
-            <input type="number" id="layers" value="3" onchange="saveConfig()">
-        </div>
-        <div class="config-group" style="grid-column: span 2;">
-            <label>Challenge Start Date 📅</label>
-            <input type="date" id="start-date" onchange="saveConfig()">
+        <div class="stat-card">
+            <span class="stat-label">Win Rate</span>
+            <span id="win-rate" class="stat-value" style="color: var(--accent);">0%</span>
         </div>
     </div>
 
-    <div class="summary">
-        <div class="stat-box">
-            <span class="stat-label">ACCUMULATED PROFIT</span>
-            <span class="stat-val" id="total-p" style="color:var(--success)">0</span>
+    <!-- Multi-Currency Pills -->
+    <div class="currency-hub">
+        <div class="curr-pill">Wallet: <b id="c-cent">0c</b></div>
+        <div class="curr-pill">USD: <b id="c-usd">$0.00</b></div>
+        <div class="curr-pill">IDR: <b id="c-idr">Rp0</b></div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="recommendation">
+        <div class="rec-box">
+            <small>STOP LOSS REC.</small>
+            <span id="rec-sl" style="color: var(--danger);">-0c</span>
         </div>
-        <div class="stat-box">
-            <span class="stat-label">WIN RATE %</span>
-            <span class="stat-val" id="win-rate" style="color:var(--accent)">0%</span>
+        <div class="rec-box">
+            <small>TAKE PROFIT REC.</small>
+            <span id="rec-tp" style="color: var(--success);">+0c</span>
         </div>
     </div>
 
-    <div id="journal-list"></div>
+    <!-- Settings Card -->
+    <div class="config-card">
+        <div style="margin-bottom: 20px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; color: var(--text-dim);">SYSTEM CONFIGURATION</div>
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label>Capital (Cent)</label>
+                <input type="number" id="capital" value="500" onchange="saveConfig()">
+            </div>
+            <div class="input-group">
+                <label>Risk Per Layer %</label>
+                <input type="number" id="risk-percent" value="1" onchange="saveConfig()">
+            </div>
+            <div class="input-group">
+                <label>Reward Ratio (1:X)</label>
+                <input type="number" id="risk-ratio" value="2" onchange="saveConfig()">
+            </div>
+            <div class="input-group">
+                <label>USD/IDR Rate</label>
+                <input type="number" id="usd-rate" value="16200" onchange="saveConfig()">
+            </div>
+            <div class="input-group">
+                <label>Max Layers</label>
+                <input type="number" id="layers" value="3" onchange="saveConfig()">
+            </div>
+            <div class="input-group">
+                <label>Start Date</label>
+                <input type="date" id="start-date" onchange="saveConfig()">
+            </div>
+        </div>
+    </div>
 
-    <div class="footer">
-        Trade List Super System • Alpha 2026
+    <div id="journal-list">
+        <!-- Day cards will be generated here -->
+    </div>
+
+    <div class="floating-footer">
+        <div>
+            <div style="font-size: 0.6rem; color: var(--text-dim);">CURRENT BALANCE (EST)</div>
+            <div id="float-idr" style="font-weight: 800; font-size: 1rem; color: var(--accent);">Rp0</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-size: 0.6rem; color: var(--text-dim);">STATUS</div>
+            <div style="font-size: 0.7rem; font-weight: 800; color: var(--success);">ALGO READY</div>
+        </div>
     </div>
 </div>
 
 <script>
+    // Time Sync
     function updateClock() {
-        const timeStr = new Date().toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta' });
-        document.getElementById('current-time').innerText = timeStr;
+        const now = new Date();
+        document.getElementById('current-time').innerText = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta' });
     }
     setInterval(updateClock, 1000);
 
+    // Core Logic
     function saveConfig() {
         const config = {
-            name: document.getElementById('m-name').value,
-            date: document.getElementById('start-date').value,
             cap: document.getElementById('capital').value,
-            type: document.getElementById('acc-type').value,
-            risk: document.getElementById('risk-ratio').value,
-            layers: document.getElementById('layers').value
+            rate: document.getElementById('usd-rate').value,
+            riskP: document.getElementById('risk-percent').value,
+            riskR: document.getElementById('risk-ratio').value,
+            layers: document.getElementById('layers').value,
+            date: document.getElementById('start-date').value
         };
-        localStorage.setItem('super_trade_config', JSON.stringify(config));
+        localStorage.setItem('xau_pro_v5', JSON.stringify(config));
         renderJournal();
     }
 
     function renderJournal() {
-        const conf = JSON.parse(localStorage.getItem('super_trade_config')) || { name: 'XAU/USD', cap: 500, type: 'c', risk: 2, layers: 3 };
+        const conf = JSON.parse(localStorage.getItem('xau_pro_v5')) || { cap: 500, rate: 16200, riskP: 1, riskR: 2, layers: 3 };
         const list = document.getElementById('journal-list');
         list.innerHTML = '';
         
@@ -151,67 +333,86 @@
         let totalWin = 0;
         let totalLoss = 0;
 
+        const slCent = (conf.cap * (conf.riskP / 100));
+        const tpCent = slCent * conf.riskR;
+
+        document.getElementById('rec-sl').innerText = `-${slCent.toFixed(1)}c`;
+        document.getElementById('rec-tp').innerText = `+${tpCent.toFixed(1)}c`;
+
         for(let d=1; d<=30; d++) {
             const card = document.createElement('div');
-            card.className = 'day-card';
+            card.className = 'day-row';
             
-            let dStr = "Set Date";
+            let dateLabel = "No Date";
             if(conf.date) {
                 let dt = new Date(conf.date);
                 dt.setDate(dt.getDate() + (d-1));
-                dStr = dt.toLocaleDateString('id-ID', {weekday:'short', day:'numeric', month:'short'});
-                if(dt.getDay() === 6 || dt.getDay() === 0) card.style.opacity = "0.5";
+                dateLabel = dt.toLocaleDateString('id-ID', {weekday:'short', day:'numeric', month:'short'});
             }
 
             card.innerHTML = `
-                <div class="day-header">
-                    <div>
-                        <div style="font-weight:900; font-size:0.8rem; letter-spacing:1px">${conf.name} DAY ${d}</div>
-                        <div class="risk-badge">REWARD RATIO 1:${conf.risk}</div>
-                    </div>
-                    <span style="font-size:0.7rem; color:var(--accent); font-weight:bold">${dStr}</span>
+                <div class="day-meta">
+                    <span class="day-title">JOURNAL DAY ${d}</span>
+                    <span class="day-date">${dateLabel}</span>
                 </div>
-                <div class="layer-grid" id="grid-d${d}"></div>
+                <div class="layers-wrapper" id="grid-d${d}"></div>
             `;
             list.appendChild(card);
 
             const grid = document.getElementById(`grid-d${d}`);
             for(let l=1; l<=conf.layers; l++) {
-                const key = `sl_d${d}_l${l}`;
-                const st = localStorage.getItem(key);
-                const btn = document.createElement('button');
-                btn.className = `layer-btn ${st === 'W' ? 'layer-win' : st === 'L' ? 'layer-loss' : ''}`;
-                btn.innerText = st || l;
+                const key = `v5_d${d}_l${l}`;
+                const state = localStorage.getItem(key);
+                const node = document.createElement('div');
+                node.className = `layer-node ${state === 'W' ? 'win' : state === 'L' ? 'loss' : ''}`;
                 
-                if(st === 'W') { totalProfit += (1 * conf.risk); totalWin++; }
-                if(st === 'L') { totalProfit -= 1; totalLoss++; }
+                let changeVal = `L${l}`;
+                if(state === 'W') { totalProfit += tpCent; totalWin++; changeVal = `+${tpCent.toFixed(1)}`; }
+                if(state === 'L') { totalProfit -= slCent; totalLoss++; changeVal = `-${slCent.toFixed(1)}`; }
 
-                btn.onclick = () => {
-                    if(!st) localStorage.setItem(key, 'W');
-                    else if(st === 'W') localStorage.setItem(key, 'L');
+                node.innerHTML = `
+                    <span class="node-label">${changeVal}</span>
+                    <span class="node-status">${state || 'READY'}</span>
+                `;
+                node.onclick = () => {
+                    if(!state) localStorage.setItem(key, 'W');
+                    else if(state === 'W') localStorage.setItem(key, 'L');
                     else localStorage.removeItem(key);
                     renderJournal();
                 };
-                grid.appendChild(btn);
+                grid.appendChild(node);
             }
         }
         
-        document.getElementById('total-p').innerText = totalProfit.toFixed(1) + conf.type;
+        // Final Output
+        document.getElementById('total-p').innerText = (totalProfit >= 0 ? '+' : '') + totalProfit.toFixed(1);
         const wr = (totalWin + totalLoss) > 0 ? (totalWin / (totalWin + totalLoss) * 100).toFixed(0) : 0;
         document.getElementById('win-rate').innerText = wr + '%';
+
+        const finalCent = parseFloat(conf.cap) + totalProfit;
+        const finalUsd = finalCent / 100;
+        const finalIdr = finalUsd * conf.rate;
+
+        document.getElementById('c-cent').innerText = finalCent.toFixed(0) + 'c';
+        document.getElementById('c-usd').innerText = '$' + finalUsd.toFixed(2);
+        const formattedIdr = 'Rp' + Math.floor(finalIdr).toLocaleString('id-ID');
+        document.getElementById('c-idr').innerText = formattedIdr;
+        document.getElementById('float-idr').innerText = formattedIdr;
     }
 
-    const saved = JSON.parse(localStorage.getItem('super_trade_config'));
+    // Initialize
+    const saved = JSON.parse(localStorage.getItem('xau_pro_v5'));
     if(saved) {
-        document.getElementById('m-name').value = saved.name;
-        document.getElementById('start-date').value = saved.date;
         document.getElementById('capital').value = saved.cap;
-        document.getElementById('acc-type').value = saved.type;
-        document.getElementById('risk-ratio').value = saved.risk;
+        document.getElementById('usd-rate').value = saved.rate;
+        document.getElementById('risk-percent').value = saved.riskP;
+        document.getElementById('risk-ratio').value = saved.riskR;
         document.getElementById('layers').value = saved.layers;
+        document.getElementById('start-date').value = saved.date || '';
     }
     renderJournal();
     updateClock();
 </script>
+
 </body>
 </html>
