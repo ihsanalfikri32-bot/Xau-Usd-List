@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XAU/USD Konsisten Challenge</title>
+    <style>
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --bg: #000000;
+            --card: #0a0a0a;
+            --accent: #00d2ff;
+            --success: #39ff14; 
+            --danger: #ff3131;  
+            --rest: #ffea00;    
+            --text: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0; padding: 15px;
+            display: flex; flex-direction: column; align-items: center;
+        }
+        .container { width: 100%; max-width: 400px; }
+        
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 15px; }
+        .header h1 { color: var(--accent); margin: 0; font-size: 1.3rem; letter-spacing: 1px; text-transform: uppercase; }
+        
+        .setup-section {
+            background: #111; padding: 15px; border-radius: 10px; 
+            margin-bottom: 20px; border: 1px dashed #333;
+        }
+        .setup-section label { display: block; font-size: 0.7rem; color: #888; margin-bottom: 5px; }
+        .setup-section input {
+            width: 100%; background: #000; border: 1px solid var(--accent);
+            color: white; padding: 8px; border-radius: 5px; outline: none;
+        }
+
+        .progress-box { background: #111; height: 8px; border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid #222; }
+        #p-bar { width: 0%; height: 100%; background: var(--accent); box-shadow: 0 0 10px var(--accent); transition: 0.5s; }
+
+        .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .info-card { background: var(--card); padding: 10px; border-radius: 8px; border: 1px solid #333; text-align: center; font-size: 0.7rem; }
+
+        .day-card { background: var(--card); margin-bottom: 12px; padding: 15px; border-radius: 10px; border: 1px solid #222; position: relative; }
+        .date-badge { position: absolute; top: 10px; right: 15px; font-size: 0.6rem; color: var(--accent); font-weight: bold; }
+        
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-top: 5px; }
+        .day-label { font-weight: bold; font-size: 0.9rem; color: #eee; }
+        .day-val { font-size: 0.7rem; color: #666; margin-top: 3px; display: block; }
+
+        .note-area {
+            width: 100%; background: #000; border: 1px solid #222; 
+            color: #888; font-size: 0.7rem; margin-top: 10px; padding: 5px;
+            border-radius: 4px; resize: none; outline: none;
+        }
+
+        .btns { display: flex; gap: 10px; }
+        .btn {
+            width: 45px; height: 45px; border-radius: 8px; border: 1px solid #333;
+            cursor: pointer; font-size: 1.1rem; background: #000; color: #444;
+            font-weight: bold; transition: 0.2s;
+        }
+
+        .win-active { color: var(--success) !important; border-color: var(--success) !important; box-shadow: 0 0 10px var(--success); }
+        .loss-active { color: var(--danger) !important; border-color: var(--danger) !important; box-shadow: 0 0 10px var(--danger); }
+        .card-win { border-color: var(--success) !important; }
+        .card-loss { border-color: var(--danger) !important; }
+        .card-rest { border-left: 4px solid var(--rest); }
+
+        .footer { text-align: center; margin-top: 30px; color: #333; font-size: 0.7rem; padding-bottom: 20px; }
+        .reset-btn { margin-top: 20px; font-size: 0.6rem; color: #444; cursor: pointer; text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>XAU/USD KONSISTEN</h1>
+        <div class="progress-box"><div id="p-bar"></div></div>
+        <div id="stat" style="font-size: 0.7rem; color: #555;">PROGRES: 0/30 HARI</div>
+    </div>
+
+    <div class="setup-section">
+        <label>TENTUKAN TANGGAL MULAI (DAY 1):</label>
+        <input type="date" id="start-date" onchange="updateCalendar()">
+    </div>
+
+    <div class="summary-grid">
+        <div class="info-card">CAPITAL: 500c<br>LOT: 0.01</div>
+        <div class="info-card">TOTAL PROFIT:<br><span id="total-p" style="color:var(--success)">0c</span></div>
+    </div>
+
+    <div id="list"></div>
+
+    <div class="footer">
+        "PLAN THE TRADE, TRADE THE PLAN"<br>
+        2026 CALENDAR SYSTEM
+        <div class="reset-btn" onclick="resetJournal()">RESET SEMUA DATA</div>
+    </div>
+</div>
+
+<script>
+    const list = document.getElementById('list');
+    const dateInput = document.getElementById('start-date');
+
+    // Load saved start date
+    if(localStorage.getItem('xau-start-date')) {
+        dateInput.value = localStorage.getItem('xau-start-date');
+    }
+
+    function updateCalendar() {
+        localStorage.setItem('xau-start-date', dateInput.value);
+        renderList();
+    }
+
+    function formatDate(date) {
+        const options = { weekday: 'short', day: 'numeric', month: 'short' };
+        return date.toLocaleDateString('id-ID', options);
+    }
+
+    function renderList() {
+        list.innerHTML = '';
+        let startDate = dateInput.value ? new Date(dateInput.value) : null;
+        let done = 0;
+        let profit = 0;
+
+        for (let i = 1; i <= 30; i++) {
+            let currentDayDate = "";
+            let isRest = false;
+
+            if (startDate) {
+                let d = new Date(startDate);
+                d.setDate(startDate.getDate() + (i - 1));
+                currentDayDate = formatDate(d);
+                // Cek jika Sabtu (6) atau Minggu (0)
+                if (d.getDay() === 6 || d.getDay() === 0) isRest = true;
+            }
+
+            const status = localStorage.getItem('xau-v3-'+i);
+            const note = localStorage.getItem('note-xau-v3-'+i) || '';
+            
+            if(status) {
+                done++;
+                if(status === 'win') profit += 50;
+                if(status === 'loss') profit -= 25;
+            }
+
+            const card = document.createElement('div');
+            card.className = `day-card ${isRest ? 'card-rest' : ''} ${status === 'win' ? 'card-win' : ''} ${status === 'loss' ? 'card-loss' : ''}`;
+            
+            let actionHtml = isRest ? 
+                `<button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">V</button>` :
+                `<button class="btn ${status === 'loss' ? 'loss-active' : ''}" onclick="set(${i},'loss')">X</button>
+                 <button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">V</button>`;
+
+            card.innerHTML = `
+                <div class="date-badge">${currentDayDate}</div>
+                <div class="card-header">
+                    <div>
+                        <span class="day-label">DAY ${i} ${isRest ? '- REHAT' : ''}</span>
+                        <span class="day-val">${isRest ? 'MARKET TUTUP' : 'TP: 50c | SL: 25c'}</span>
+                    </div>
+                    <div class="btns">${actionHtml}</div>
+                </div>
+                <textarea class="note-area" placeholder="Analisa/Emosi..." onkeyup="saveNote(${i}, this.value)">${note}</textarea>
+            `;
+            list.appendChild(card);
+        }
+
+        document.getElementById('p-bar').style.width = (done/30*100)+'%';
+        document.getElementById('stat').innerText = 'PROGRES: ' + done + '/30 HARI SELESAI';
+        document.getElementById('total-p').innerText = profit + 'c';
+    }
+
+    function set(d, s) {
+        const key = 'xau-v3-'+d;
+        if (localStorage.getItem(key) === s) localStorage.removeItem(key);
+        else localStorage.setItem(key, s);
+        renderList();
+    }
+
+    function saveNote(d, val) {
+        localStorage.setItem('note-xau-v3-'+d, val);
+    }
+
+    function resetJournal() {
+        if(confirm('Hapus semua progres, tanggal, dan catatan?')) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    renderList();
+</script>
+
+</body>
+</html>
