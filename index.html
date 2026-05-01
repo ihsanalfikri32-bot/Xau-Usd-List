@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XAU/USD - Consistent Challenge ⚖️</title>
-    <!-- Import Font Modern -->
+    <!-- Import Font FinTech Modern -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #050505;
             --card-bg: #121212;
-            --accent: #e5c07b; /* Gold accent for XAU/USD feel */
+            --accent: #e5c07b; /* Gold untuk XAU/USD */
             --success: #00f291;
             --danger: #ff4d4d;
             --text-main: #ffffff;
@@ -32,15 +32,13 @@
             line-height: 1.5;
         }
 
-        /* Layout Container */
         .app-container {
             width: 100%;
-            max-width: 600px; /* Optimal for Desktop & Mobile */
+            max-width: 600px;
             min-height: 100vh;
-            padding: 20px 16px 100px 16px;
+            padding: 20px 16px 120px 16px;
         }
 
-        /* Header Section */
         header {
             display: flex;
             justify-content: space-between;
@@ -48,7 +46,7 @@
             margin-bottom: 24px;
         }
 
-        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px; color: var(--accent); }
+        .logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.5px; color: var(--accent); }
         
         #current-time {
             font-family: 'JetBrains Mono', monospace;
@@ -56,15 +54,15 @@
             padding: 6px 12px;
             border-radius: 8px;
             border: 1px solid var(--border);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        /* Pro Stats Dashboard */
+        /* Stats Grid */
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
@@ -73,55 +71,39 @@
             padding: 16px;
             border-radius: 16px;
             position: relative;
-            overflow: hidden;
         }
 
         .stat-card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent); opacity: 0.5;
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--accent); opacity: 0.3;
         }
 
-        .stat-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        .stat-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
         .stat-value { font-size: 1.2rem; font-weight: 800; margin-top: 4px; display: block; }
 
-        /* Recommendation Banner */
-        .recommendation {
-            background: linear-gradient(90deg, rgba(229,192,123,0.1), transparent);
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            border-radius: 4px 12px 12px 4px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .rec-box { text-align: center; }
-        .rec-box small { font-size: 0.6rem; color: var(--text-dim); display: block; margin-bottom: 2px; }
-        .rec-box span { font-weight: 800; font-size: 0.9rem; }
-
-        /* Multi-Currency Hub */
+        /* Currency Hub */
         .currency-hub {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 24px;
             overflow-x: auto;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
         }
 
         .curr-pill {
             background: var(--glass);
             border: 1px solid var(--border);
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 100px;
             white-space: nowrap;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .curr-pill b { color: var(--accent); }
 
-        /* Settings Accordion */
+        /* Setup Panel */
         .config-card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -133,18 +115,18 @@
         .grid-inputs {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
 
         .input-group { display: flex; flex-direction: column; gap: 6px; }
-        .input-group label { font-size: 0.65rem; color: var(--text-dim); font-weight: 600; }
+        .input-group label { font-size: 0.6rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase; }
         .input-group input {
             background: #1a1a1a;
             border: 1px solid var(--border);
             color: white;
             padding: 12px;
             border-radius: 10px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: 0.3s;
         }
         .input-group input:focus { border-color: var(--accent); }
@@ -161,16 +143,17 @@
         .day-meta {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 15px;
         }
 
-        .day-title { font-weight: 800; font-size: 0.9rem; }
+        .day-title { font-weight: 800; font-size: 0.85rem; }
+        .day-target { font-size: 0.65rem; color: var(--accent); margin-top: 4px; font-weight: 600; }
         .day-date { font-size: 0.7rem; color: var(--text-dim); }
 
         .layers-wrapper {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
             gap: 10px;
         }
 
@@ -184,13 +167,13 @@
             transition: 0.2s;
         }
 
-        .node-label { font-size: 0.6rem; color: var(--text-dim); display: block; margin-bottom: 4px; }
-        .node-status { font-weight: 800; font-size: 0.75rem; }
+        .node-label { font-size: 0.55rem; color: var(--text-dim); display: block; margin-bottom: 4px; }
+        .node-status { font-weight: 800; font-size: 0.7rem; }
 
         .win { background: rgba(0, 242, 145, 0.1) !important; border-color: var(--success) !important; color: var(--success); }
         .loss { background: rgba(255, 77, 77, 0.1) !important; border-color: var(--danger) !important; color: var(--danger); }
 
-        /* Floating Summary for Mobile */
+        /* Sticky Footer */
         .floating-footer {
             position: fixed;
             bottom: 20px;
@@ -198,20 +181,19 @@
             transform: translateX(-50%);
             width: calc(100% - 32px);
             max-width: 568px;
-            background: rgba(18, 18, 18, 0.8);
+            background: rgba(18, 18, 18, 0.85);
             backdrop-filter: blur(20px);
             border: 1px solid var(--border);
-            padding: 12px 20px;
+            padding: 14px 20px;
             border-radius: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            z-index: 100;
         }
 
-        /* Desktop Adjustments */
         @media (min-width: 768px) {
-            .app-container { padding-top: 50px; }
             .grid-inputs { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
@@ -220,44 +202,32 @@
 
 <div class="app-container">
     <header>
-        <div class="logo">XAU/USD PRO</div>
+        <div class="logo">XAU/USD CONSISTENT CHALLENGE</div>
         <div id="current-time">00:00:00</div>
     </header>
 
-    <!-- Dashboard Stats -->
+    <!-- Stats Dashboard -->
     <div class="dashboard">
         <div class="stat-card">
-            <span class="stat-label">Net P/L (Cent)</span>
-            <span id="total-p" class="stat-value" style="color: var(--success);">0.00</span>
+            <span class="stat-label">Net Profit (Cent)</span>
+            <span id="total-p" class="stat-value" style="color: var(--success);">0.0</span>
         </div>
         <div class="stat-card">
-            <span class="stat-label">Win Rate</span>
+            <span class="stat-label">Win Rate %</span>
             <span id="win-rate" class="stat-value" style="color: var(--accent);">0%</span>
         </div>
     </div>
 
-    <!-- Multi-Currency Pills -->
+    <!-- Multi-Currency Wallet -->
     <div class="currency-hub">
         <div class="curr-pill">Wallet: <b id="c-cent">0c</b></div>
         <div class="curr-pill">USD: <b id="c-usd">$0.00</b></div>
         <div class="curr-pill">IDR: <b id="c-idr">Rp0</b></div>
     </div>
 
-    <!-- Recommendations -->
-    <div class="recommendation">
-        <div class="rec-box">
-            <small>STOP LOSS REC.</small>
-            <span id="rec-sl" style="color: var(--danger);">-0c</span>
-        </div>
-        <div class="rec-box">
-            <small>TAKE PROFIT REC.</small>
-            <span id="rec-tp" style="color: var(--success);">+0c</span>
-        </div>
-    </div>
-
-    <!-- Settings Card -->
+    <!-- Configuration -->
     <div class="config-card">
-        <div style="margin-bottom: 20px; font-weight: 800; font-size: 0.8rem; letter-spacing: 1px; color: var(--text-dim);">SYSTEM CONFIGURATION</div>
+        <div style="margin-bottom: 16px; font-weight: 800; font-size: 0.75rem; letter-spacing: 1px; color: var(--text-dim);">STRATEGY SETTINGS</div>
         <div class="grid-inputs">
             <div class="input-group">
                 <label>Capital (Cent)</label>
@@ -272,8 +242,8 @@
                 <input type="number" id="risk-ratio" value="2" onchange="saveConfig()">
             </div>
             <div class="input-group">
-                <label>USD/IDR Rate</label>
-                <input type="number" id="usd-rate" value="16200" onchange="saveConfig()">
+                <label>USD Rate (IDR)</label>
+                <input type="number" id="usd-rate" value="16000" onchange="saveConfig()">
             </div>
             <div class="input-group">
                 <label>Max Layers</label>
@@ -286,31 +256,29 @@
         </div>
     </div>
 
-    <div id="journal-list">
-        <!-- Day cards will be generated here -->
-    </div>
+    <!-- Dynamic Journal -->
+    <div id="journal-list"></div>
 
+    <!-- Footer Summary -->
     <div class="floating-footer">
         <div>
-            <div style="font-size: 0.6rem; color: var(--text-dim);">CURRENT BALANCE (EST)</div>
+            <div style="font-size: 0.55rem; color: var(--text-dim); letter-spacing: 1px;">TOTAL BALANCE (IDR)</div>
             <div id="float-idr" style="font-weight: 800; font-size: 1rem; color: var(--accent);">Rp0</div>
         </div>
         <div style="text-align: right;">
-            <div style="font-size: 0.6rem; color: var(--text-dim);">STATUS</div>
-            <div style="font-size: 0.7rem; font-weight: 800; color: var(--success);">ALGO READY</div>
+            <div style="font-size: 0.55rem; color: var(--text-dim); letter-spacing: 1px;">SYSTEM</div>
+            <div style="font-size: 0.7rem; font-weight: 800; color: var(--success);">ALGO SYNCED</div>
         </div>
     </div>
 </div>
 
 <script>
-    // Time Sync
     function updateClock() {
         const now = new Date();
         document.getElementById('current-time').innerText = now.toLocaleTimeString('en-GB', { timeZone: 'Asia/Jakarta' });
     }
     setInterval(updateClock, 1000);
 
-    // Core Logic
     function saveConfig() {
         const config = {
             cap: document.getElementById('capital').value,
@@ -320,12 +288,12 @@
             layers: document.getElementById('layers').value,
             date: document.getElementById('start-date').value
         };
-        localStorage.setItem('xau_pro_v5', JSON.stringify(config));
+        localStorage.setItem('xau_master_v1', JSON.stringify(config));
         renderJournal();
     }
 
     function renderJournal() {
-        const conf = JSON.parse(localStorage.getItem('xau_pro_v5')) || { cap: 500, rate: 16200, riskP: 1, riskR: 2, layers: 3 };
+        const conf = JSON.parse(localStorage.getItem('xau_master_v1')) || { cap: 500, rate: 16000, riskP: 1, riskR: 2, layers: 3 };
         const list = document.getElementById('journal-list');
         list.innerHTML = '';
         
@@ -333,17 +301,14 @@
         let totalWin = 0;
         let totalLoss = 0;
 
-        const slCent = (conf.cap * (conf.riskP / 100));
-        const tpCent = slCent * conf.riskR;
-
-        document.getElementById('rec-sl').innerText = `-${slCent.toFixed(1)}c`;
-        document.getElementById('rec-tp').innerText = `+${tpCent.toFixed(1)}c`;
+        const slValue = (conf.cap * (conf.riskP / 100));
+        const tpValue = slValue * conf.riskR;
 
         for(let d=1; d<=30; d++) {
             const card = document.createElement('div');
             card.className = 'day-row';
             
-            let dateLabel = "No Date";
+            let dateLabel = "Set Date";
             if(conf.date) {
                 let dt = new Date(conf.date);
                 dt.setDate(dt.getDate() + (d-1));
@@ -352,7 +317,10 @@
 
             card.innerHTML = `
                 <div class="day-meta">
-                    <span class="day-title">JOURNAL DAY ${d}</span>
+                    <div>
+                        <span class="day-title">DAY ${d}</span>
+                        <div class="day-target">🎯 TP +${tpValue.toFixed(1)}c | SL -${slValue.toFixed(1)}c per layer</div>
+                    </div>
                     <span class="day-date">${dateLabel}</span>
                 </div>
                 <div class="layers-wrapper" id="grid-d${d}"></div>
@@ -361,17 +329,17 @@
 
             const grid = document.getElementById(`grid-d${d}`);
             for(let l=1; l<=conf.layers; l++) {
-                const key = `v5_d${d}_l${l}`;
+                const key = `xm1_d${d}_l${l}`;
                 const state = localStorage.getItem(key);
                 const node = document.createElement('div');
                 node.className = `layer-node ${state === 'W' ? 'win' : state === 'L' ? 'loss' : ''}`;
                 
-                let changeVal = `L${l}`;
-                if(state === 'W') { totalProfit += tpCent; totalWin++; changeVal = `+${tpCent.toFixed(1)}`; }
-                if(state === 'L') { totalProfit -= slCent; totalLoss++; changeVal = `-${slCent.toFixed(1)}`; }
+                let displayChange = `L${l}`;
+                if(state === 'W') { totalProfit += tpValue; totalWin++; displayChange = `+${tpValue.toFixed(1)}`; }
+                if(state === 'L') { totalProfit -= slValue; totalLoss++; displayChange = `-${slValue.toFixed(1)}`; }
 
                 node.innerHTML = `
-                    <span class="node-label">${changeVal}</span>
+                    <span class="node-label">${displayChange}</span>
                     <span class="node-status">${state || 'READY'}</span>
                 `;
                 node.onclick = () => {
@@ -384,11 +352,12 @@
             }
         }
         
-        // Final Output
+        // Stats Calculation
         document.getElementById('total-p').innerText = (totalProfit >= 0 ? '+' : '') + totalProfit.toFixed(1);
         const wr = (totalWin + totalLoss) > 0 ? (totalWin / (totalWin + totalLoss) * 100).toFixed(0) : 0;
         document.getElementById('win-rate').innerText = wr + '%';
 
+        // Currency Conversion
         const finalCent = parseFloat(conf.cap) + totalProfit;
         const finalUsd = finalCent / 100;
         const finalIdr = finalUsd * conf.rate;
@@ -400,8 +369,8 @@
         document.getElementById('float-idr').innerText = formattedIdr;
     }
 
-    // Initialize
-    const saved = JSON.parse(localStorage.getItem('xau_pro_v5'));
+    // Load Initial Data
+    const saved = JSON.parse(localStorage.getItem('xau_master_v1'));
     if(saved) {
         document.getElementById('capital').value = saved.cap;
         document.getElementById('usd-rate').value = saved.rate;
