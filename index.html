@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trader List - Auto Rest</title>
+    <title>Trader List - Pro Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500;700;800&family=Outfit:wght@600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,7 +22,9 @@
         header { margin-bottom: 20px; display: flex; flex-direction: column; gap: 12px; }
         .top-row { display: flex; justify-content: space-between; align-items: center; }
         .brand { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--accent); }
-        .theme-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); padding: 8px 14px; border-radius: 10px; font-size: 0.65rem; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .controls { display: flex; align-items: center; gap: 8px; }
+        .btn-action { background: var(--card-bg); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 10px; font-size: 0.65rem; font-weight: 800; cursor: pointer; text-transform: uppercase; }
+        .btn-danger { border-color: var(--danger); color: var(--danger); }
         
         .session-tracker { display: flex; gap: 8px; background: var(--card-bg); padding: 10px; border-radius: 14px; border: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; }
         .session-item { display: flex; align-items: center; gap: 6px; font-size: 0.55rem; font-weight: 700; color: var(--text-dim); white-space: nowrap; padding: 4px 10px; border-radius: 8px; background: var(--input-bg); }
@@ -64,9 +66,10 @@
     <header>
         <div class="top-row">
             <div class="brand">Trader List</div>
-            <div class="controls" style="display: flex; align-items: center; gap: 10px;">
-                <button class="theme-btn" onclick="toggleTheme()">Mode</button>
-                <div id="clock" style="font-size: 0.8rem; color: var(--text-main); font-family: 'JetBrains Mono'; font-weight: 800;">00:00:00</div>
+            <div class="controls">
+                <button class="btn-action btn-danger" onclick="clearJournal()">Reset</button>
+                <button class="btn-action" onclick="toggleTheme()">Mode</button>
+                <div id="clock" style="font-size: 0.8rem; color: var(--text-main); font-family: 'JetBrains Mono'; font-weight: 800; margin-left: 5px;">00:00:00</div>
             </div>
         </div>
         <div class="session-tracker">
@@ -148,6 +151,23 @@
         document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', { hour12: false });
     }
 
+    // FITUR BARU: CLEAR JURNAL
+    function clearJournal() {
+        if (confirm("Hapus seluruh data jurnal (Win/Loss dan Rest Day)? Pengaturan modal tidak akan dihapus.")) {
+            // Hapus semua data Win/Loss dan status Rest Day dari localStorage
+            const keysToRemove = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key.startsWith('TL_V7_') || key.startsWith('TL_REST_')) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(k => localStorage.removeItem(k));
+            render();
+            alert("Jurnal telah dibersihkan!");
+        }
+    }
+
     function sync() {
         const data = {
             market: document.getElementById('cfg-market').value || 'XAU/USD',
@@ -190,12 +210,9 @@
             currentDay.setDate(start.getDate() + d);
             const isToday = currentDay.setHours(0,0,0,0) === today;
             
-            // Logika Auto Rest (Sabtu=6, Minggu=0)
             const dayOfWeek = currentDay.getDay();
             const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
             const manualStatus = localStorage.getItem(`TL_REST_D${d}`);
-            
-            // Jika tidak ada setting manual, ikuti weekend. Jika ada, ikuti manual.
             const isRest = manualStatus ? (manualStatus === 'REST') : isWeekend;
 
             const calItem = document.createElement('div');
