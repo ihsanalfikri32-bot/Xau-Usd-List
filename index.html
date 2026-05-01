@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XAU/USD Konsisten Challenge</title>
+    <title>XAU/USD Konsisten Challenge 📈</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         :root {
@@ -77,27 +77,27 @@
 
 <div class="container">
     <div class="header">
-        <h1>XAU/USD KONSISTEN</h1>
+        <h1>🏆 XAU/USD KONSISTEN</h1>
         <div class="progress-box"><div id="p-bar"></div></div>
-        <div id="stat" style="font-size: 0.7rem; color: #555;">PROGRES: 0/30 HARI</div>
+        <div id="stat" style="font-size: 0.7rem; color: #555;">PROGRES: 0/30 HARI 🔥</div>
     </div>
 
     <div class="setup-section">
-        <label>TENTUKAN TANGGAL MULAI (DAY 1):</label>
+        <label>📅 TANGGAL MULAI (DAY 1):</label>
         <input type="date" id="start-date" onchange="updateCalendar()">
     </div>
 
     <div class="summary-grid">
-        <div class="info-card">CAPITAL: 500c<br>LOT: 0.01</div>
-        <div class="info-card">TOTAL PROFIT:<br><span id="total-p" style="color:var(--success)">0c</span></div>
+        <div class="info-card">💰 CAPITAL: 500c<br>📊 LOT: 0.01</div>
+        <div class="info-card">💵 TOTAL PROFIT:<br><span id="total-p" style="color:var(--success)">0c</span></div>
     </div>
 
     <div id="list"></div>
 
     <div class="footer">
-        "PLAN THE TRADE, TRADE THE PLAN"<br>
+        "PLAN THE TRADE, TRADE THE PLAN" 🚀<br>
         2026 CALENDAR SYSTEM
-        <div class="reset-btn" onclick="resetJournal()">RESET SEMUA DATA</div>
+        <div class="reset-btn" onclick="resetJournal()">🗑️ RESET SEMUA DATA</div>
     </div>
 </div>
 
@@ -105,7 +105,6 @@
     const list = document.getElementById('list');
     const dateInput = document.getElementById('start-date');
 
-    // Load saved start date
     if(localStorage.getItem('xau-start-date')) {
         dateInput.value = localStorage.getItem('xau-start-date');
     }
@@ -134,7 +133,6 @@
                 let d = new Date(startDate);
                 d.setDate(startDate.getDate() + (i - 1));
                 currentDayDate = formatDate(d);
-                // Cek jika Sabtu (6) atau Minggu (0)
                 if (d.getDay() === 6 || d.getDay() === 0) isRest = true;
             }
 
@@ -151,26 +149,26 @@
             card.className = `day-card ${isRest ? 'card-rest' : ''} ${status === 'win' ? 'card-win' : ''} ${status === 'loss' ? 'card-loss' : ''}`;
             
             let actionHtml = isRest ? 
-                `<button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">V</button>` :
-                `<button class="btn ${status === 'loss' ? 'loss-active' : ''}" onclick="set(${i},'loss')">X</button>
-                 <button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">V</button>`;
+                `<button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">✅</button>` :
+                `<button class="btn ${status === 'loss' ? 'loss-active' : ''}" onclick="set(${i},'loss')">❌</button>
+                 <button class="btn ${status === 'win' ? 'win-active' : ''}" onclick="set(${i},'win')">✅</button>`;
 
             card.innerHTML = `
                 <div class="date-badge">${currentDayDate}</div>
                 <div class="card-header">
                     <div>
-                        <span class="day-label">DAY ${i} ${isRest ? '- REHAT' : ''}</span>
-                        <span class="day-val">${isRest ? 'MARKET TUTUP' : 'TP: 50c | SL: 25c'}</span>
+                        <span class="day-label">DAY ${i} ${isRest ? '☕' : '⚔️'}</span>
+                        <span class="day-val">${isRest ? 'MARKET TUTUP' : '🎯 TP: 50c | 🛡️ SL: 25c'}</span>
                     </div>
                     <div class="btns">${actionHtml}</div>
                 </div>
-                <textarea class="note-area" placeholder="Analisa/Emosi..." onkeyup="saveNote(${i}, this.value)">${note}</textarea>
+                <textarea class="note-area" placeholder="Analisa/Emosi hari ini..." onkeyup="saveNote(${i}, this.value)">${note}</textarea>
             `;
             list.appendChild(card);
         }
 
         document.getElementById('p-bar').style.width = (done/30*100)+'%';
-        document.getElementById('stat').innerText = 'PROGRES: ' + done + '/30 HARI SELESAI';
+        document.getElementById('stat').innerText = 'PROGRES: ' + done + '/30 HARI SELESAI 🔥';
         document.getElementById('total-p').innerText = profit + 'c';
     }
 
@@ -186,7 +184,7 @@
     }
 
     function resetJournal() {
-        if(confirm('Hapus semua progres, tanggal, dan catatan?')) {
+        if(confirm('Hapus semua progres dan catatan?')) {
             localStorage.clear();
             location.reload();
         }
